@@ -738,7 +738,7 @@ int LibContext::Remount() {
       }
 
       mount_point_->ReEvaluateAuthz();
-      LogCvmfs(kLogCvmfs, kLogDebug, "switched to catalog revision %d",
+      LogCvmfs(kLogCvmfs, kLogDebug, "switched to catalog revision %" PRIu64,
                mount_point_->catalog_mgr()->GetRevision());
       return 0;
 

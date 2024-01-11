@@ -228,7 +228,7 @@ bool CommandTag::CloseAndPublishHistory(Environment *env) {
   // disable the unlink guard in order to keep the newly exported manifest file
   env->manifest_path.Disable();
   LogCvmfs(kLogCvmfs, kLogVerboseMsg,
-           "exported manifest (%d) with new "
+           "exported manifest (%" PRIu64 ") with new "
            "history '%s'",
            env->manifest->revision(), new_history_hash.ToString().c_str());
 
@@ -410,7 +410,8 @@ catalog::Catalog *CommandTag::GetCatalog(const std::string &repository_url,
 
 void CommandTag::PrintTagMachineReadable(
     const history::History::Tag &tag) const {
-  LogCvmfs(kLogCvmfs, kLogStdout, "%s %s %d %d %d %s %s", tag.name.c_str(),
+  LogCvmfs(kLogCvmfs, kLogStdout, "%s %s %" PRIu64 " %d %d %s %s",
+           tag.name.c_str(),
            tag.root_hash.ToString().c_str(), tag.size, tag.revision,
            tag.timestamp,
            (tag.branch == "") ? "(default)" : tag.branch.c_str(),
@@ -841,7 +842,7 @@ void CommandListTags::PrintHumanReadableBranchList(
       LogCvmfs(kLogCvmfs, kLogStdout | kLogNoLinebreak, "%s",
                ((l + 1) == branches[i].level) ? "\u251c " : "\u2502 ");
     }
-    LogCvmfs(kLogCvmfs, kLogStdout, "%s @%u",
+    LogCvmfs(kLogCvmfs, kLogStdout, "%s @%" PRIu64,
              branches[i].branch.branch.c_str(),
              branches[i].branch.initial_revision);
   }
@@ -853,7 +854,7 @@ void CommandListTags::PrintMachineReadableBranchList(
 {
   unsigned N = branches.size();
   for (unsigned i = 0; i < N; ++i) {
-    LogCvmfs(kLogCvmfs, kLogStdout, "[%u] %s%s @%u",
+    LogCvmfs(kLogCvmfs, kLogStdout, "[%u] %s%s @%" PRIu64,
              branches[i].level,
              AddPadding("", branches[i].level, false, " ").c_str(),
              branches[i].branch.branch.c_str(),
@@ -970,7 +971,7 @@ void CommandInfoTag::PrintHumanReadableInfo(
     const history::History::Tag &tag) const {
   LogCvmfs(kLogCvmfs, kLogStdout,
            "Name:         %s\n"
-           "Revision:     %d\n"
+           "Revision:     %" PRIu64 "\n"
            "Timestamp:    %s\n"
            "Branch:       %s\n"
            "Root Hash:    %s\n"
@@ -1069,7 +1070,8 @@ int CommandRollbackTag::Main(const ArgumentList &args) {
   const uint64_t current_revision = env->manifest->revision();
   assert(target_tag.revision <= current_revision);
   if (target_tag.revision == current_revision) {
-    LogCvmfs(kLogCvmfs, kLogStderr, "not rolling back to current head (%u)",
+    LogCvmfs(kLogCvmfs, kLogStderr,
+             "not rolling back to current head (%" PRIu64 ")",
              current_revision);
     return 1;
   }
