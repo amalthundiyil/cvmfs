@@ -91,7 +91,7 @@ void GarbageCollector<CatalogTraversalT, HashFilterT>::PreserveDataObjects(
     if (!oldest_trunk_catalog_found_)
       oldest_trunk_catalog_ = std::min(oldest_trunk_catalog_, mtime);
     if (configuration_.verbose) {
-      const int    rev   = data.catalog->revision();
+      const uint64_t rev = data.catalog->revision();
       LogCvmfs(kLogGc, kLogStdout | kLogDebug,
                "Preserving Revision %" PRIu64 " (%s / added @ %s)",
                rev,
