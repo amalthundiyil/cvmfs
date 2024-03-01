@@ -1,0 +1,43 @@
+name: Docker
+
+on:
+  push:
+    branches: [devel,master]
+  pull_request:
+    branches: [devel,master]
+
+jobs:
+  quick_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build image
+        run: |
+          git clone https://github.com/cvmfs/cvmfs.git
+          cd cvmfs/tests/common/container
+          docker-compose up --build -d
+
+      - name: Build CVMFS
+        run: |
+          docker exec -u sftnight -it cvmfs-dev bash -c \
+            "cmake -S /home/sftnight/cvmfs -B /tmp/cvmfs-build -D EXTERNALS_PREFIX=/tmp/cvmfs-ext -D BUILD_SHRINKWRAP=ON"
+
+      - name: Install CVMFS
+        run: |
+          docker exec -u sftnight -it cvmfs-dev bash -c \
+            "cd /tmp/cvmfs-build && make && sudo make install"
+
+      - name: Setup CVMFS
+        run: |
+          docker exec -u sftnight -it cvmfs-dev bash -c \
+            "sudo cvmfs_config setup"
+
+      - name: Run Quick Test Suite
+        run: |
+          docker exec -u sftnight -it cvmfs-dev bash -c \
+            "cd /home/sftnight/cvmfs/test && \
+            CVMFS_TEST_USER=sftnight ./run.sh /tmp/cvmfs-test.log -s 'quick' ./src/0* ./src/1*"
+
