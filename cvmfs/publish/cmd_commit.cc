@@ -28,10 +28,8 @@ int CmdCommit::Main(const Options &options) {
   std::string fqrn;
 
   if (!options.plain_args().empty()) {
-    std::vector<char> delims;
-    delims.push_back('/');
     std::vector<std::string> tokens =
-        SplitStringBounded(2, options.plain_args()[0].value_str, delims);
+      SplitStringBounded(2, options.plain_args()[0].value_str, '/');
     fqrn = tokens[0];
   }
 

@@ -22,7 +22,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-#include <set>
 #include <string>
 
 using namespace std;  // NOLINT
@@ -289,19 +288,13 @@ bool HasSuffix(const std::string &str, const std::string &suffix,
 }
 
 vector<string> SplitString(const string &str, char delim) {
-  vector<char> delims;
-  delims.push_back(delim);
-  return SplitStringBounded(0, str, delims);
+  return SplitStringBounded(0, str, delim);
 }
 
-vector<string> SplitString(const string &str, const vector<char> &delims) {
-  return SplitStringBounded(0, str, delims);
-}
-
-vector<string> SplitStringBounded(unsigned max_chunks, const string &str,
-                                  const vector<char> &delims) {
+vector<string> SplitStringBounded(
+  unsigned max_chunks, const string &str, char delim)
+{
   vector<string> result;
-  const set<char> delims_set(delims.begin(), delims.end());
 
   // edge case... one chunk is always the whole string
   if (1 == max_chunks) {
@@ -315,7 +308,7 @@ vector<string> SplitStringBounded(unsigned max_chunks, const string &str,
   unsigned chunks = 1;
   unsigned i;
   for (i = 0; i < size; ++i) {
-    if (delims_set.count(str[i])) {
+    if (str[i] == delim) {
       result.push_back(str.substr(marker, i - marker));
       marker = i + 1;
 

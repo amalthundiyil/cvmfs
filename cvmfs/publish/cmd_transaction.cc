@@ -28,10 +28,8 @@ int CmdTransaction::Main(const Options &options) {
   std::string fqrn;
   std::string lease_path;
   if (!options.plain_args().empty()) {
-    std::vector<char> delims;
-    delims.push_back('/');
-    std::vector<std::string> tokens = SplitStringBounded(
-        2, options.plain_args()[0].value_str, delims);
+    std::vector<std::string> tokens =
+      SplitStringBounded(2, options.plain_args()[0].value_str, '/');
     fqrn = tokens[0];
     if (tokens.size() == 2)
       lease_path = MakeCanonicalPath(tokens[1]);
